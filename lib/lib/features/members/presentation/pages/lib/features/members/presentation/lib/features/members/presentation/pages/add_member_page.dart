@@ -85,6 +85,75 @@ void saveMember() async {
   await db.insertMember(
     MembersCompanion.insert(
       id: uuid,
+      import 'package:flutter/material.dart';
+import '../../../../core/database/app_database.dart';
+import 'add_member_page.dart';
+
+class MembersPage extends StatefulWidget {
+  const MembersPage({super.key});
+
+  @override
+  State<MembersPage> createState() => _MembersPageState();
+}
+
+class _MembersPageState extends State<MembersPage> {
+  final db = AppDatabase();
+  List<Member> members = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadMembers();
+  }
+
+  Future<void> loadMembers() async {
+    final data = await db.getAllMembers();
+    setState(() {
+      members = data;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Members"),
+      ),
+
+      body: members.isEmpty
+          ? const Center(
+              child: Text("No members yet"),
+            )
+          : ListView.builder(
+              itemCount: members.length,
+              itemBuilder: (context, index) {
+                final m = members[index];
+
+                return ListTile(
+                  leading: const Icon(Icons.person),
+                  title: Text(m.fullName),
+                  subtitle: Text(m.phone),
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                );
+              },
+            ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddMemberPage(),
+            ),
+          );
+
+          loadMembers();
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
       fullName: nameController.text,
       phone: phoneController.text,
       age: int.parse(ageController.text),
