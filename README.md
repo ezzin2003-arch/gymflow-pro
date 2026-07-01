@@ -1,4 +1,4 @@
-# GymFlow Pro
+# Gym
 
 Offline Gym Management System
 
